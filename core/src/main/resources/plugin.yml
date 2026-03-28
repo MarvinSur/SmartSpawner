@@ -38,6 +38,7 @@ softdepend:
   - SuperiorSkyblock2
   - BentoBox
   - IridiumSkyblock
+  - HuskClaims
 
   # RPG/Skill Plugins
   - AuraSkills

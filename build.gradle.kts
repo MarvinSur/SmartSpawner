@@ -66,6 +66,10 @@ allprojects {
             name = "minecodes-repository-releases"
             url = uri("https://maven.minecodes.pl/releases")
         }
+        maven {
+            name = "william278"
+            url = uri("https://repo.william278.net/releases")
+        }
     }
 }
 

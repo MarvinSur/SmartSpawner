@@ -36,6 +36,7 @@ public class IntegrationManager {
     private boolean hasIridiumSkyblock = false;
     private boolean hasPlotSquared = false;
     private boolean hasResidence = false;
+    private boolean hasHuskClaims = false;
 
     // Integration plugin flags
     private boolean hasAuraSkills = false;
@@ -55,6 +56,11 @@ public class IntegrationManager {
     }
 
     private void checkProtectionPlugins() {
+        hasHuskClaims = checkPlugin("HuskClaims", () -> {
+            Plugin huskPlugin = Bukkit.getPluginManager().getPlugin("HuskClaims");
+            return huskPlugin != null && huskPlugin.isEnabled();
+        }, true);
+
         hasWorldGuard = checkPlugin("WorldGuard", () -> {
             Plugin worldGuardPlugin = Bukkit.getPluginManager().getPlugin("WorldGuard");
             return worldGuardPlugin != null && worldGuardPlugin.isEnabled();
@@ -190,6 +196,8 @@ public class IntegrationManager {
         }
         return false;
     }
+
+    public boolean isHasHuskClaims() { return hasHuskClaims; }
 
     public void reload() {
         if (auraSkillsIntegration != null) {

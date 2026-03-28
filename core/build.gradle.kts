@@ -52,6 +52,7 @@ dependencies {
 
     compileOnly("io.lumine:Mythic-Dist:5.11.2")
     compileOnly("com.iridium:IridiumSkyblock:4.1.2")
+    compileOnly("net.william278.huskclaims:huskclaims-bukkit:1.5.11")
 
     implementation(platform("com.intellectualsites.bom:bom-newest:1.56"))
     compileOnly("com.intellectualsites.plotsquared:plotsquared-core")
