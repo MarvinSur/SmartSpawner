@@ -36,7 +36,7 @@ jobs:
       - name: Extract version
         id: extract_version
         run: |
-          VERSION=$(grep 'version =' build.gradle | head -n 1 | awk -F "'" '{print $2}')
+          VERSION=$(grep -m1 'version' build.gradle.kts | sed "s/.*version = \"//;s/\".*//")
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           COMMIT_SHA_SHORT=$(git rev-parse --short HEAD)
           echo "COMMIT_SHA_SHORT=$COMMIT_SHA_SHORT" >> $GITHUB_ENV

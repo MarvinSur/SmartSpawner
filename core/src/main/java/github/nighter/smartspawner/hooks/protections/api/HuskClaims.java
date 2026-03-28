@@ -1,14 +1,15 @@
 package github.nighter.smartspawner.hooks.protections.api;
 
-import net.william278.cloplib.operation.Operation;
-import net.william278.cloplib.operation.OperationType;
 import net.william278.huskclaims.api.HuskClaimsAPI;
+import net.william278.huskclaims.claim.Claim;
+import net.william278.huskclaims.claim.ClaimWorld;
 import net.william278.huskclaims.position.Position;
 import net.william278.huskclaims.position.World;
-import net.william278.huskclaims.user.OnlineUser;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 public class HuskClaims {
 
@@ -16,39 +17,58 @@ public class HuskClaims {
         HuskClaimsAPI api = HuskClaimsAPI.getInstance();
         String worldName = location.getWorld() != null ? location.getWorld().getName() : "world";
         World world = api.getWorld(worldName);
-        return api.getPosition(location.getX(), location.getY(), location.getZ(), world);
+        return api.getPosition(
+                location.getBlockX() + 0.5,
+                location.getBlockY() + 0.5,
+                location.getBlockZ() + 0.5,
+                world
+        );
     }
 
-    private static boolean isOperationAllowed(@NotNull Player player, @NotNull Location location,
-                                              @NotNull OperationType operationType) {
+    /**
+     * Returns true if the player is allowed to interact with the claim at the location.
+     * Allows if: no claim present, player is op, player is owner, or player has any trust level.
+     */
+    private static boolean isTrusted(@NotNull Player player, @NotNull Location location) {
         try {
             HuskClaimsAPI api = HuskClaimsAPI.getInstance();
             Position position = toPosition(location);
-            OnlineUser onlineUser = api.getOnlineUser(player.getUniqueId());
-            return api.isOperationAllowed(onlineUser, operationType, position);
+
+            // No claim here — allow
+            Optional<ClaimWorld> claimWorldOpt = api.getClaimWorldAt(position);
+            if (claimWorldOpt.isEmpty()) return true;
+
+            ClaimWorld claimWorld = claimWorldOpt.get();
+            Optional<Claim> claimOpt = claimWorld.getClaimAt(position);
+            if (claimOpt.isEmpty()) return true;
+
+            Claim claim = claimOpt.get();
+
+            // Admin claim — allow everyone
+            if (claim.getOwner().isEmpty()) return true;
+
+            // Player is claim owner
+            if (claim.getOwner().get().equals(player.getUniqueId())) return true;
+
+            // Player has any trust level in this claim
+            net.william278.huskclaims.user.OnlineUser onlineUser =
+                    api.getOnlineUser(player.getUniqueId());
+            return api.getTrustLevel(claim, claimWorld, onlineUser).isPresent();
+
         } catch (HuskClaimsAPI.NotRegisteredException | IllegalArgumentException e) {
             return true;
         }
     }
 
-    /**
-     * Check if a player can open/interact with the spawner (requires CONTAINER_OPEN permission).
-     */
     public static boolean canPlayerOpenMenu(@NotNull Player player, @NotNull Location location) {
-        return isOperationAllowed(player, location, OperationType.CONTAINER_OPEN);
+        return isTrusted(player, location);
     }
 
-    /**
-     * Check if a player can break the spawner block (requires BLOCK_BREAK permission).
-     */
     public static boolean canPlayerBreakBlock(@NotNull Player player, @NotNull Location location) {
-        return isOperationAllowed(player, location, OperationType.BLOCK_BREAK);
+        return isTrusted(player, location);
     }
 
-    /**
-     * Check if a player can stack spawners (requires BLOCK_PLACE permission).
-     */
     public static boolean canPlayerStackBlock(@NotNull Player player, @NotNull Location location) {
-        return isOperationAllowed(player, location, OperationType.BLOCK_PLACE);
+        return isTrusted(player, location);
     }
 }
