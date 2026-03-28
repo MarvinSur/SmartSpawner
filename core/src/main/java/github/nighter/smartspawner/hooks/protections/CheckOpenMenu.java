@@ -22,7 +22,6 @@ public class CheckOpenMenu {
         if (integrationManager.isHasBentoBox() && !BentoBoxAPI.canPlayerOpenMenu(player, location)) return false;
         if (integrationManager.isHasSimpleClaimSystem() && !SimpleClaimSystem.canPlayerOpenMenuOnClaim(player, location))
             return false;
-        if (integrationManager.isHasMinePlots() && !MinePlots.canPlayerOpenMenu(player, location)) return false;
         if (integrationManager.isHasIridiumSkyblock() && !IridiumSkyblock.canPlayerOpenMenu(player, location)) return false;
         if (integrationManager.isHasPlotSquared() && !PlotSquared.canInteract(player, location)) return false;
         if (integrationManager.isHasResidence() && !Residence.canInteract(player, location)) return false;

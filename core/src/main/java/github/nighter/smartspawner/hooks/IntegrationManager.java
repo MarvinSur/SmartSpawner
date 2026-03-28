@@ -31,7 +31,6 @@ public class IntegrationManager {
     private boolean hasBentoBox = false;
     private boolean hasSimpleClaimSystem = false;
     private boolean hasRedProtect = false;
-    private boolean hasMinePlots = false;
     private boolean hasMythicMobs = false;
     private boolean hasIridiumSkyblock = false;
     private boolean hasPlotSquared = false;
@@ -118,11 +117,6 @@ public class IntegrationManager {
             return pRP != null && pRP.isEnabled();
         }, true);
 
-        hasMinePlots = checkPlugin("minePlots", () -> {
-            Plugin mP = Bukkit.getPluginManager().getPlugin("minePlots");
-            return mP != null && mP.isEnabled();
-        }, true);
-
         hasMythicMobs = checkPlugin("MythicMobs", () -> {
             Plugin mm = Bukkit.getPluginManager().getPlugin("MythicMobs");
             if(mm != null && mm.isEnabled()) {
@@ -197,6 +191,7 @@ public class IntegrationManager {
         return false;
     }
 
+    public boolean isHasMinePlots() { return false; } // MinePlots removed - dependency unavailable
     public boolean isHasHuskClaims() { return hasHuskClaims; }
 
     public void reload() {
