@@ -69,6 +69,10 @@ allprojects {
         maven {
             name = "minecodes-repository-releases"
             url = uri("https://maven.minecodes.pl/releases")
+            content {
+                excludeGroup("net.william278")
+                excludeGroup("net.william278.huskclaims")
+            }
         }
     }
 }
