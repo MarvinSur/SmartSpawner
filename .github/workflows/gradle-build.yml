@@ -36,17 +36,19 @@ jobs:
       - name: Extract version
         id: extract_version
         run: |
-          VERSION=$(grep -m1 'version' build.gradle.kts | sed "s/.*version = \"//;s/\".*//")
+          VERSION=$(grep 'version = "' build.gradle.kts | head -n 1 | awk -F'"' '{print $2}')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
           COMMIT_SHA_SHORT=$(git rev-parse --short HEAD)
           echo "COMMIT_SHA_SHORT=$COMMIT_SHA_SHORT" >> $GITHUB_ENV
+          echo "commit_sha_short=$COMMIT_SHA_SHORT" >> $GITHUB_OUTPUT
           echo "Version: $VERSION (Commit: $COMMIT_SHA_SHORT)"
 
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
         with:
-          name: SmartSpawner-${{ env.VERSION }}
-          path: core/build/libs/SmartSpawner-${{ env.VERSION }}.jar
+          name: SmartSpawner-${{ steps.extract_version.outputs.version }}
+          path: core/build/libs/SmartSpawner-${{ steps.extract_version.outputs.version }}.jar
           retention-days: 90
           if-no-files-found: error
 
