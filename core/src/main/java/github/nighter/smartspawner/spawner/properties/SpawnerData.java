@@ -666,8 +666,8 @@ public class SpawnerData {
         }
 
         // Add custom model data if present
-        if (item.hasItemMeta() && item.getItemMeta(). hasCustomModelDataComponent()) {
-            key.append("_cmd:").append(item.getItemMeta().getCustomModelDataComponent());
+        if (item.hasItemMeta() && item.getItemMeta().hasCustomModelData()) {
+            key.append("_cmd:").append(item.getItemMeta().getCustomModelData());
         }
 
         // Add display name if present
