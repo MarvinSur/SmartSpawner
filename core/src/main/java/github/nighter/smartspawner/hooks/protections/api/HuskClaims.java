@@ -27,14 +27,13 @@ public class HuskClaims {
 
     /**
      * Returns true if the player is allowed to interact with the claim at the location.
-     * Allows if: no claim present, player is op, player is owner, or player has any trust level.
+     * Allows if: no claim present, player is owner, or player has any trust level.
      */
     private static boolean isTrusted(@NotNull Player player, @NotNull Location location) {
         try {
             HuskClaimsAPI api = HuskClaimsAPI.getInstance();
             Position position = toPosition(location);
 
-            // No claim here — allow
             Optional<ClaimWorld> claimWorldOpt = api.getClaimWorldAt(position);
             if (claimWorldOpt.isEmpty()) return true;
 
@@ -55,7 +54,8 @@ public class HuskClaims {
                     api.getOnlineUser(player.getUniqueId());
             return api.getTrustLevel(claim, claimWorld, onlineUser).isPresent();
 
-        } catch (HuskClaimsAPI.NotRegisteredException | IllegalArgumentException e) {
+        } catch (Exception e) {
+            // Fallback: allow if HuskClaims API is unavailable or throws any error
             return true;
         }
     }
