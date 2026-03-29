@@ -82,7 +82,7 @@ dependencies:
       load: BEFORE
       required: false
       join-classpath: true
-    minePlots:
+    HuskClaims:
       load: BEFORE
       required: false
       join-classpath: true
